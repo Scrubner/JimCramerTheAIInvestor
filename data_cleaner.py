@@ -2,6 +2,7 @@ import simfin as sf
 import numpy as np
 import pandas as pd
 
+
 def getStockData():
     # Set your API-key for downloading data.
     sf.set_api_key('5c12b7f2-512c-480a-ac5f-24447091db0c')
@@ -64,11 +65,52 @@ def collectRawYData(read_Data = False):
         getStockData()
 
     # Import the data
-    y         = pd.read_csv(r'Data\price.csv')     # Price Data
-    y["Date"] = pd.to_datetime(price_df["Date"])
-    print('Price array dimensions:', y.shape)
-    return y
+    d         = pd.read_csv(r'Data\price.csv')     # Price Data
+    d["Date"] = pd.to_datetime(y["Date"])
+    print('Price array dimensions:', d.shape)
+    return d
     
+def getPriceDataAt(ticker, day_f, num_days, d):
+    window_days = 5
+    # Step 1: Grab all data about the ticker of interest near the date of interest
+    rows = d[(d["Date"].between(pd.to_datetime(day_f) + pd.Timedelta(days=num_days), pd.to_datetime(day_f)\
+             + pd.Timedelta(days=num_days+window_days))) & (d["Ticker"]==ticker)]
+    
+    # Step 2: Grab the data closest to the date of interest
+    if rows.empty:   # Edge case where no recent data exists
+        return [ticker, np.float64("NaN"), np.datetime64('NaT'), np.float64("Nan")]
+    else:   # return the most recent data available
+        return [ticker, rows.iloc[0]["Open"], rows.iloc[0]["Date"], rows.iloc[0]["Open"]*rows.iloc[0]["Volume"]]
+    
+def getPriceReport(x, d, modifier=365):
+    i = 0
+    y = [[None]*8 for i in range(len(x))]
+    whichDateCol = 'Publish Date'
 
-X = collectRawXData()
-y = collectRawYData()
+    for index in range(len(x)):
+        y[i] = 
+
+#########################################################################################################
+# MAIN SCRIPT
+#########################################################################################################
+
+# -------------
+# Control Panel
+# -------------
+
+
+# ------------------------
+# Step 1: Read in the data
+# ------------------------
+x = collectRawXData()
+d = collectRawYData()
+
+
+# ---------------------------------------------
+# Step 2: Clean up the data for easy processing
+# ---------------------------------------------
+
+# ------------------ The following are some test cases: confirm data when able -------------------------
+print(getPriceDataAt('GOOG','2021-05-12', 0, d))    # currently reporting correct values in csv file - check to make sure csv is correct
+print(getPriceDataAt('GOOG','2021-05-12', 30, d))   # Doing the same as the earlier function
+
