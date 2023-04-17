@@ -66,7 +66,7 @@ def collectRawYData(read_Data = False):
 
     # Import the data
     d         = pd.read_csv(r'Data\price.csv')     # Price Data
-    d["Date"] = pd.to_datetime(y["Date"])
+    d["Date"] = pd.to_datetime(d["Date"])
     print('Price array dimensions:', d.shape)
     return d
     
@@ -87,9 +87,24 @@ def getPriceReport(x, d, modifier=365):
     y = [[None]*8 for i in range(len(x))]
     whichDateCol = 'Publish Date'
 
+    print('Compiling Price Data...')
     for index in range(len(x)):
-        y[i] = 
+        y[i] = getPriceDataAt(x['Ticker'].iloc[index], x[whichDateCol].iloc[index], 0, d) + getPriceDataAt(x['Ticker'].iloc[index], x[whichDateCol].iloc[index], modifier, d)
+        if i == np.floor(len(x)/4):
+            print(r'25% complete...')
+        if i == np.floor(len(x)/2):
+            print(r'50% complete...')
+        if i == np.floor(3*len(x)/4):
+            print(r'75% complete...')
+        i = i+1
+    print('Price Data Compiled')
 
+    print('Saving Price Data...')
+    Y = pd.DataFrame(y, columns=['Ticker', 'Open Price', 'Date', 'Volume', 'Ticker2', 'Open Price2', 'Date2', 'Volume2'])
+    Y.to_csv(r'Data\priceReport.csv', index=True)
+    print('Price Data Saved')
+
+    return y
 #########################################################################################################
 # MAIN SCRIPT
 #########################################################################################################
@@ -104,7 +119,7 @@ def getPriceReport(x, d, modifier=365):
 # ------------------------
 x = collectRawXData()
 d = collectRawYData()
-
+Y = getPriceReport(x, d)
 
 # ---------------------------------------------
 # Step 2: Clean up the data for easy processing
