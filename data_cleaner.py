@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 
+
 def getStockData():
     # Set your API-key for downloading data.
     sf.set_api_key('5c12b7f2-512c-480a-ac5f-24447091db0c')
@@ -119,13 +120,16 @@ def getPriceReport(x, d, modifier=365):
 # ------------------------
 x = collectRawXData()
 d = collectRawYData()
-Y = getPriceReport(x, d)
+#Y = getPriceReport(x, d)
+Y = pd.read_csv(r'Data\priceReport.csv')
 
-# ---------------------------------------------
-# Step 2: Clean up the data for easy processing
-# ---------------------------------------------
+# ----------------------------------------
+# Step 2: Store the x data for easy access
+# ----------------------------------------
+x.to_csv(r'Data\labels.csv', index=True)
 
 # ------------------ The following are some test cases: confirm data when able -------------------------
 print(getPriceDataAt('GOOG','2021-05-12', 0, d))    # currently reporting correct values in csv file - check to make sure csv is correct
 print(getPriceDataAt('GOOG','2021-05-12', 30, d))   # Doing the same as the earlier function
+
 
