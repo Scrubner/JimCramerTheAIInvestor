@@ -1,6 +1,7 @@
 import simfin as sf
 import numpy as np
 import pandas as pd
+from pandas.plotting import scatter_matrix
 
 
 
@@ -118,18 +119,19 @@ def getPriceReport(x, d, modifier=365):
 # ------------------------
 # Step 1: Read in the data
 # ------------------------
-x = collectRawXData()
+# X = collectRawXData()
+# X.to_csv(r'Data\labels.csv', index=True)
+# Y = getPriceReport(x, d)
+
+X = pd.read_csv(r'Data\labels.csv')
+Y = pd.DataFrame(pd.read_csv(r'Data\priceReport.csv'), columns = ['Ticker', 'Open Price', \
+                            'Date', 'Volume', 'Ticker2', 'Open Price2', 'Date2', 'Volume2'])
+
 d = collectRawYData()
-#Y = getPriceReport(x, d)
-Y = pd.read_csv(r'Data\priceReport.csv')
 
 # ----------------------------------------
-# Step 2: Store the x data for easy access
+# Step 2: Some Data visuals
 # ----------------------------------------
-x.to_csv(r'Data\labels.csv', index=True)
-
-# ------------------ The following are some test cases: confirm data when able -------------------------
-print(getPriceDataAt('GOOG','2021-05-12', 0, d))    # currently reporting correct values in csv file - check to make sure csv is correct
-print(getPriceDataAt('GOOG','2021-05-12', 30, d))   # Doing the same as the earlier function
-
+attributes = ["Revenue", "Net Income"]
+scatter_matrix(X[attributes])
 
